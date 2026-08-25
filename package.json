@@ -1,0 +1,41 @@
+{
+  "name": "zen-daily-notes",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "electron/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "cap:sync": "cap sync",
+    "android:add": "cap add android",
+    "android:build": "npm run build && cap sync && cd android && gradlew assembleDebug"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.48.0",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.475.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/local-notifications": "^7.0.0",
+    "@tailwindcss/vite": "^4.0.7",
+    "@types/node": "^22.13.4",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.2",
+    "electron": "^34.2.0",
+    "tailwindcss": "^4.0.7",
+    "typescript": "~5.7.2",
+    "vite": "^6.1.0",
+    "wait-on": "^8.0.2"
+  }
+}

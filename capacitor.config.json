@@ -1,0 +1,15 @@
+{
+  "appId": "com.zennotes.app",
+  "appName": "ZenNotes",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon_config_sample",
+      "iconColor": "#6366f1",
+      "sound": "beep.wav"
+    }
+  }
+}
