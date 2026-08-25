@@ -5,16 +5,31 @@ import { getAllDailyNotes, saveAllDailyNotes } from './storage';
 const CONFIG_KEY = 'zen_notes_supabase_config_v1';
 
 export function getSyncConfig(): SyncConfig {
+  const envUrl = import.meta.env.VITE_SUPABASE_URL || '';
+  const envKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+
   try {
     const raw = localStorage.getItem(CONFIG_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      const url = parsed.supabaseUrl || envUrl;
+      const key = parsed.supabaseAnonKey || envKey;
+      return {
+        supabaseUrl: url,
+        supabaseAnonKey: key,
+        isLoggedIn: Boolean(url && key),
+        autoSync: true,
+        lastSyncedAt: parsed.lastSyncedAt
+      };
+    }
   } catch (err) {
     console.error('Error reading sync config:', err);
   }
+
   return {
-    supabaseUrl: '',
-    supabaseAnonKey: '',
-    isLoggedIn: false,
+    supabaseUrl: envUrl,
+    supabaseAnonKey: envKey,
+    isLoggedIn: Boolean(envUrl && envKey),
     autoSync: true
   };
 }
