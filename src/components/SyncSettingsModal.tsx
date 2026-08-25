@@ -121,12 +121,12 @@ export const SyncSettingsModal: React.FC<SyncSettingsModalProps> = ({
 
           <div className="bg-slate-900/50 p-3 rounded-xl border border-white/5 text-xs text-slate-400 leading-relaxed">
             <p className="font-medium text-slate-300 mb-1 flex items-center gap-1">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Setup Instructions:
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Supabase Table & RLS Setup:
             </p>
-            1. Create a free account at <strong className="text-indigo-300">supabase.com</strong>.<br />
-            2. Run this SQL table setup in your Supabase SQL editor:<br />
+            Run this in your Supabase SQL editor to enable read/write access:<br />
             <code className="block bg-slate-950 p-2 rounded border border-white/10 text-[10px] font-mono text-emerald-300 mt-1 select-all">
-              create table daily_notes (id text primary key, date text, formatted_date text, title text, note_category text, lines jsonb, updated_at timestamp);
+              create table if not exists daily_notes (id text primary key, date text, formatted_date text, title text, note_category text, lines jsonb, updated_at timestamp);<br />
+              alter table daily_notes disable row level security;
             </code>
           </div>
 

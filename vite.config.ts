@@ -5,6 +5,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: './', // Ensures relative asset paths for Electron file:// loading
   plugins: [
     react(),
     tailwindcss(),

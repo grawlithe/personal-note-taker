@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DailyNote, LineItem, ViewMode, SyncConfig, Reminder } from './types';
 import {
   getTodayDateId,
@@ -9,7 +9,7 @@ import {
   carryOverUnfinishedItems,
   saveAllDailyNotes
 } from './services/storage';
-import { getSyncConfig, subscribeToRealtimeSync, pushLocalToSupabase } from './services/supabase';
+import { getSyncConfig, subscribeToRealtimeSync, pushLocalToSupabase, pullFromSupabase } from './services/supabase';
 import { startReminderChecker } from './services/notifications';
 
 import { Header } from './components/Header';
@@ -19,6 +19,7 @@ import { CategoryFilter } from './components/CategoryFilter';
 import { CalendarView } from './components/CalendarView';
 import { ReminderModal } from './components/ReminderModal';
 import { SyncSettingsModal } from './components/SyncSettingsModal';
+import { PullToRefresh } from './components/PullToRefresh';
 
 import { Sparkles, Calendar as CalendarIcon, Bell, CheckCircle2, Clock, AlertCircle } from 'lucide-react';
 
@@ -55,6 +56,15 @@ export const App: React.FC = () => {
     setCurrentNote(getDailyNote(dateToLoad));
     setYesterdayNote(getDailyNote(yesterdayId));
   };
+
+  // Pull-to-refresh handler: fetch from cloud then reload local state
+  const handlePullToRefresh = useCallback(async () => {
+    const config = getSyncConfig();
+    if (config.supabaseUrl && config.supabaseAnonKey) {
+      await pullFromSupabase();
+    }
+    reloadData();
+  }, [selectedDate]);
 
   useEffect(() => {
     // Start background reminder checker
@@ -251,7 +261,8 @@ export const App: React.FC = () => {
         activeCategoryFilter={selectedCategoryFilter}
       />
 
-      {/* Main Content Layout */}
+      {/* Main Content Layout - wrapped in Pull-to-Refresh */}
+      <PullToRefresh onRefresh={handlePullToRefresh}>
       <main className="max-w-7xl mx-auto w-full px-4 pt-6 flex-1">
         {/* Render View Modes */}
         {viewMode === 'today' && (
@@ -365,6 +376,7 @@ export const App: React.FC = () => {
           </div>
         )}
       </main>
+      </PullToRefresh>
 
       {/* Sync Settings Modal */}
       {isSyncModalOpen && (
